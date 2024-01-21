@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qrcode_phone/retrysocket.test.dart';
 import 'package:qrcode_phone/screens/callscreen.dart';
 
 void main() {
