@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qrcode_phone/socket.test.dart';
+import 'package:qrcode_phone/retrysocket.test.dart';
+import 'package:qrcode_phone/screens/callscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SocketIoExample(),
+      home: CallScreen(),
     );
   }
 }

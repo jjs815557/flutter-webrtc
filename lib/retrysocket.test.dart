@@ -1,55 +1,46 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class SocketIoExample extends StatefulWidget {
-  const SocketIoExample({super.key});
+class RetrySocket extends StatefulWidget {
+  const RetrySocket({super.key});
 
   @override
-  State<SocketIoExample> createState() => _SocketIoExampleState();
+  State<RetrySocket> createState() => _RetrySocketState();
 }
 
-class _SocketIoExampleState extends State<SocketIoExample> {
-  late final IO.Socket socket;
-
+class _RetrySocketState extends State<RetrySocket> {
+  late IO.Socket socket;
   final _localRTCVideoRenderer = RTCVideoRenderer();
   final _remoteRTCVideoRenderer = RTCVideoRenderer();
 
   MediaStream? _localStream;
-  RTCPeerConnection? _rtcPeerConnection;
+  RTCPeerConnection? _rtcPeerConnection; //pc
+
+// media status
+  bool isAudioOn = true, isVideoOn = true, isFrontCameraSelected = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _localRTCVideoRenderer.initialize();
+    _remoteRTCVideoRenderer.initialize();
     init();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _localRTCVideoRenderer.dispose();
-    _remoteRTCVideoRenderer.dispose();
-    _localStream?.dispose();
-    _rtcPeerConnection?.dispose();
-    socket.close();
-  }
-
   Future init() async {
-    await _localRTCVideoRenderer.initialize();
-    await _remoteRTCVideoRenderer.initialize();
+    // await _localRTCVideoRenderer.initialize();
+    // await _remoteRTCVideoRenderer.initialize();
 
     await connectSocket();
     await joinRoom();
-    setState(() {});
   }
 
   Future connectSocket() async {
     socket = IO.io(
-        'http://localhost:3000',
+        'http://192.168.200.135:3000',
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .build());
@@ -75,55 +66,6 @@ class _SocketIoExampleState extends State<SocketIoExample> {
       _gotIce(RTCIceCandidate(
           data['candidate'], data['sdpMid'], data['sdpMLineIndex']));
     });
-  }
-
-  Future joinRoom() async {
-    final config = {
-      'iceServers': [
-        {
-          "url": [
-            "stun:stun.l.google.com:193602",
-            "stun:stun1.l.google.com:193602",
-            "stun:stun2.l.google.com:193602"
-          ]
-        }
-      ]
-    };
-
-    final sdpConstraints = {
-      'mandatory': {
-        'offerToReceiveAudio': true,
-        'offerToReceiveVideo': true,
-      },
-      'optional': []
-    };
-
-    _rtcPeerConnection =
-        await createPeerConnection(config, sdpConstraints); // peer 객체 생성
-
-    final mediaConstranints = {
-      // 자신의 미디어 초기 설정 값
-      'audio': true,
-      'video': {'facingMode': 'user'}
-    };
-
-    _localStream = await Helper.openCamera(mediaConstranints); //자신의 미디어 장치 찾기
-    _localStream!.getTracks().forEach((track) {
-      // getTracks() 자신의 미디어 장치 목록
-      _rtcPeerConnection!.addTrack(track, _localStream!);
-    });
-    _localRTCVideoRenderer.srcObject =
-        _localStream; // RTCVideoView()화면에 출력해주는 스트림
-
-    _rtcPeerConnection!.onIceCandidate = (ice) {
-      _sendIce(ice);
-    };
-
-    _rtcPeerConnection!.onAddStream = (stream) {
-      _remoteRTCVideoRenderer.srcObject = stream;
-    };
-
-    socket.emit('join');
   }
 
   Future _sendOffer() async {
@@ -160,15 +102,82 @@ class _SocketIoExampleState extends State<SocketIoExample> {
     _rtcPeerConnection!.addCandidate(ice);
   }
 
+  Future joinRoom() async {
+    final config = {
+      'iceServers': [
+        {"url": "stun:stun.l.google.com:19302"}
+      ]
+    };
+
+    final sdpConstraints = {
+      'mandatory': {
+        'offerToReceiveAudio': true,
+        'offerToReceiveVideo': true,
+      },
+      'optional': []
+    };
+
+    final mediaConstraints = {
+      // 자신의 미디어 초기 설정 값
+      'audio': true,
+      'video': {'facingMode': 'user'}
+    };
+
+    _rtcPeerConnection = await createPeerConnection(config, sdpConstraints);
+
+    _localStream = await Helper.openCamera(mediaConstraints);
+    _localStream!.getTracks().forEach((track) {
+      _rtcPeerConnection!.addTrack(track, _localStream!);
+    });
+
+    _localRTCVideoRenderer.srcObject = _localStream;
+
+    _rtcPeerConnection!.onIceCandidate = (ice) {
+      _sendIce(ice);
+    };
+
+    _rtcPeerConnection!.onAddStream = (stream) {
+      _remoteRTCVideoRenderer.srcObject = stream;
+    };
+
+    socket.emit('join');
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('webRTC test'),
+          title: Text('call page'),
         ),
         body: Column(
           children: [
+            // Text(widget.roomName),
+            // Expanded(
+            //   child: Stack(
+            //     children: [
+            //       RTCVideoView(
+            //         _remoteRTCVideoRenderer,
+            //         objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            //       ),
+            //       Positioned(
+            //         right: 20,
+            //         bottom: 20,
+            //         child: SizedBox(
+            //           height: 150,
+            //           width: 120,
+            //           child: RTCVideoView(
+            //             _localRTCVideoRenderer,
+            //             // mirror: isFrontCameraSelected,
+            //             objectFit:
+            //                 RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
             Expanded(child: RTCVideoView(_localRTCVideoRenderer)),
             Expanded(child: RTCVideoView(_remoteRTCVideoRenderer)),
           ],
