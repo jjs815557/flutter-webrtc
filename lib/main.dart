@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qrcode_phone/screens/receiver.first.screen.dart';
 import 'package:qrcode_phone/screens/callscreen.dart';
+import 'package:qrcode_phone/screens/caller.screen.dart';
+import 'package:qrcode_phone/screens/receiver.second.screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: CallScreen(),
+      home: ReceiverSecondScreen(),
     );
   }
 }
