@@ -46,6 +46,7 @@ class _CallScreenState extends State<CallScreen> {
             .setTransports(['websocket']) // for Flutter or Dart VM
             .build());
     socket.onConnect((data) => print('연결 완료!'));
+    socket.onConnectError((data) => print("Connect Error $data"));
 
     socket.on('joined', (data) {
       _sendOffer();
