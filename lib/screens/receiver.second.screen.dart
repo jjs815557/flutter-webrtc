@@ -22,8 +22,8 @@ class _ReceiverSecondScreenState extends State<ReceiverSecondScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FaIcon(
-                FontAwesomeIcons.car,
+              Icon(
+                Icons.directions_car,
                 size: 70,
               ),
               SizedBox(
@@ -53,11 +53,19 @@ class _ReceiverSecondScreenState extends State<ReceiverSecondScreen> {
                 width: 300,
                 color: Colors.grey[350],
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: FaIcon(
-                        FontAwesomeIcons.phoneSlash,
+                      icon: Icon(
+                        Icons.volume_up,
+                        size: 40,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.video_call,
                         size: 40,
                       ),
                     ),
@@ -76,8 +84,8 @@ class _ReceiverSecondScreenState extends State<ReceiverSecondScreen> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.black),
-                    child: FaIcon(
-                      FontAwesomeIcons.phoneSlash,
+                    child: Icon(
+                      Icons.call_end,
                       size: 40,
                     ),
                   ),
