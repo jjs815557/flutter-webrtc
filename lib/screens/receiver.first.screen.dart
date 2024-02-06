@@ -21,8 +21,8 @@ class _ReceiverFirstScreenState extends State<ReceiverFirstScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FaIcon(
-                FontAwesomeIcons.car,
+              Icon(
+                Icons.directions_car,
                 size: 70,
               ),
               SizedBox(
@@ -44,8 +44,8 @@ class _ReceiverFirstScreenState extends State<ReceiverFirstScreen> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.black),
-                    child: FaIcon(
-                      FontAwesomeIcons.phone,
+                    child: Icon(
+                      Icons.call,
                       size: 40,
                     ),
                   ),
@@ -54,8 +54,8 @@ class _ReceiverFirstScreenState extends State<ReceiverFirstScreen> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.black),
-                    child: FaIcon(
-                      FontAwesomeIcons.phoneSlash,
+                    child: Icon(
+                      Icons.call_end,
                       size: 40,
                     ),
                   ),
